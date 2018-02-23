@@ -1,0 +1,7 @@
+x <- scan()
+length(x)
+sum(x)
+mean(x)
+y <- scan(file="read_this_1.txt")
+write.csv(y,file="read_this_1.csv")
+z <- read.csv(file="read_this_1.csv")
