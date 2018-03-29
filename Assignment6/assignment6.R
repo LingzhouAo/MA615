@@ -14,6 +14,8 @@ ggmap(map_watercolor)
 #Blue: Bude North Cornwall Cricket Club
 #Green: Crooklets Beach
 #Yellow: Bude tidal swimming pool
+#Orange: An Mor Hotel
+#Black: Hebasca Hotel
 
 ggmap(map_road) +
   geom_point(
@@ -27,7 +29,13 @@ ggmap(map_road) +
     color = "green", size = 2) +
   geom_point(
     aes(x = -4.5540, y = 50.8326),
-    color = "yellow", size = 2)
+    color = "yellow", size = 2) +
+  geom_point(
+    aes(x = -4.5510, y = 50.8322),
+    color = "orange", size = 2) +
+  geom_point(
+    aes(x = -4.5528, y = 50.8332),
+    color = "black", size = 2)
 
 ##Watercolor map
 ggmap(map_watercolor) +
@@ -42,7 +50,13 @@ ggmap(map_watercolor) +
     color = "green", size = 2) +
   geom_point(
     aes(x = -4.5540, y = 50.8326),
-    color = "yellow", size = 2)
+    color = "yellow", size = 2) +
+  geom_point(
+    aes(x = -4.5510, y = 50.8322),
+    color = "orange", size = 2) +
+  geom_point(
+    aes(x = -4.5528, y = 50.8332),
+    color = "black", size = 2)
 
 # Maps with routes
 from <- "Bude North Cornwall Cricket Club"
@@ -53,7 +67,7 @@ ggmap(map_road) +
   geom_point(aes(x = -4.5510, y = 50.8362), color = "brown", size = 2) +
   geom_path(aes(x = lon, y = lat), colour = "blue", size = 1, data = route_df, lineend = "round")
 
-# Watercolor map wiht routes
+# Watercolor map with routes
 ggmap(map_watercolor) + 
   geom_point(aes(x =  -4.552314 , y = 50.835289), color = "red", size = 2) +
   geom_point(aes(x = -4.5510, y = 50.8362), color = "brown", size = 2) +
