@@ -1,0 +1,189 @@
+#load data
+library(shiny)
+library(readr)
+A2010 <- read.csv( "bp appre 2010.csv", header = TRUE, stringsAsFactors = FALSE)
+
+A2017 <- read.csv("bp appre 2017.csv", header = TRUE, stringsAsFactors = FALSE)
+
+A2000.2017 <- read.csv("PB monthly summaries.csv", header = TRUE, stringsAsFactors = FALSE)
+
+#clean data of BP Apprehensions 2010
+rownames(A2010)<-A2010[,1]
+
+A2010 <- subset(A2010, select= -c(Sector))
+
+A2010 <- rbind(A2010, colSums(A2010))
+
+rownames(A2010) <- c(rownames(A2010)[-length(rownames(A2010))], "Total")
+
+## cbind rowSums to dataframd
+A2010 <- cbind(A2010,rowSums(A2010))
+
+## rename last column "Totals
+colnames(A2010) <- c(colnames(A2010)[-length(colnames(A2010))], "Total")
+
+#clean data of BP Apprehensions 2017
+rownames(A2017) <- A2017[,1]
+
+A2017 <- subset(A2017, select= -c(Sector))
+
+A2017 <- rbind(A2017, colSums(A2017))
+
+rownames(A2017) <- c(rownames(A2017)[-length(rownames(A2017))], "Total")
+
+## cbind rowSums to dataframd
+A2017 <- cbind(A2017,rowSums(A2017))
+
+## rename last column "Totals
+colnames(A2017) <- c(colnames(A2017)[-length(colnames(A2017))], "Total")
+
+#statistics
+A2010_sector_mean <- apply(A2010[,1:12],1,mean)
+A2010_sector_mean
+
+A2010_month_mean <- apply(A2010[1:9,],2,mean)
+A2010_month_mean
+
+A2017_sector_mean <- apply(A2017[,1:12],1,mean)
+A2017_sector_mean
+
+A2017_month_mean <- apply(A2017[1:9,],2,mean)
+A2017_month_mean
+
+sector<-cbind(A2010_sector_mean,A2017_sector_mean)
+
+#The maximum sector in 2010 is Tucson and the maximum sector in 2017 is Tio Grande Valley
+sector2010<-as.data.frame(t(A2010[1:9,]))
+as.character(colnames(sector2010))
+sector2010
+
+sector2017<-as.data.frame(t(A2017[1:9,]))
+as.character(colnames(sector2017))
+sector2017
+
+t.test(sector2010$Tucson,sector2017$`Rio Grande Valley`)
+
+month<-cbind(A2010_month_mean,A2017_month_mean)
+
+#The maximum three months in 2010 are March, April and May
+month2010<-as.data.frame((A2010[1:9,6:8]))
+as.character(rownames(month2010))
+month2010
+month2010$sum<-apply(month2010,1,sum)
+
+#The maximum three months in 2017 are October, November and December
+month2017<-as.data.frame((A2017[1:9,1:3]))
+as.character(rownames(month2017))
+month2017
+month2017$sum<-apply(month2017,1,sum)
+t.test(month2010$sum,month2017$sum)
+
+new_A2000.2017 <- apply(t(A2000.2017[,2:13]),1,rev) 
+ts <- as.vector(t(new_A2000.2017))
+ts
+ts2 <- ts(ts,frequency = 13,start = c(2000,10))
+ts2
+new_A2000.2017_mean <- apply(new_A2000.2017,1,mean)
+new_A2000.2017_mean
+ts.plot(ts2, gpars=list(xlab="year", ylab="Apprehensions", lty=c(1:3)))
+
+options(shiny.sanitize.errors = FALSE)
+ui <- fluidPage(
+  titlePanel("Assignment3 Plots"),
+  
+  sidebarLayout(position = "left",
+                sidebarPanel("Check box",
+                             checkboxInput("comparebysector", 
+                                           "compare by sector", 
+                                           value = T),
+                             checkboxInput("comparebymonth", 
+                                           "compare by month", 
+                                           value = T),
+                             checkboxInput("timeseries", 
+                                           "time series", 
+                                           value = T)
+                ),
+                mainPanel("Main panel",
+                          fluidRow(
+                            splitLayout(cellWidths = c("50%", "50%"), 
+                                        plotOutput("graph1"), 
+                                        plotOutput("graph2"))
+                          ),
+                          tabsetPanel(
+                            
+                            tabPanel("Compare by sector", plotOutput("graph3")),
+                            tabPanel("Compare by month", plotOutput("graph4")),
+                            tabPanel("time series", plotOutput("graph5")),
+                            tabPanel("T-Test", textOutput("ttest")),
+                            
+                            p()
+                          )
+                          
+                )
+                
+  ))
+
+
+server <- function(input, output) {
+  set.seed(1234)
+  pt3 <- reactive({
+    if(input$comparebysector){
+      return(barplot(t(sector),
+                     beside = TRUE,
+                     legend.text = c("2010","2017"),
+                     main = "compare by sector"))
+    }
+    else{
+      return(NULL)
+    }
+  })
+  
+  pt4 <- reactive({
+    if(input$comparebymonth){
+      return(barplot(t(month),
+                     beside = TRUE,
+                     legend.text = c("2010","2017"),
+                     main = "compare by month"))
+    }
+    else{
+      return(NULL)
+    }
+  })
+  
+  pt5 <- reactive({
+    if(input$timeseries){
+      return(ts.plot(ts2,gpars = list(xlab="year",ylab="appre")))
+    }
+    else{
+      return(NULL)
+    }
+  })
+  
+  output$graph1 <- renderPlot({
+    barplot(A2017[1:9,13], names.arg = rownames(A2017)[1:9], 
+            las=2,
+            axisnames=TRUE,
+            main="2017 Border Patrol Apprehensions by Sector",
+            border="blue",
+            col="red")
+  })
+  output$graph2 <- renderPlot({
+    barplot(A2010[1:9,13], names.arg = rownames(A2010)[1:9], 
+            las=2,
+            axisnames=TRUE,
+            main="2010 Border Patrol Apprehensions by Sector",
+            border="blue",
+            col="yellow")
+  })
+  
+  output$graph3 <- renderPlot({pt3()})
+  output$graph4 <- renderPlot({pt4()})
+  output$graph5 <- renderPlot({pt5()})
+    
+  output$ttest <- renderPrint({
+    return(t.test(month2010$sum,month2017$sum))
+  })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)

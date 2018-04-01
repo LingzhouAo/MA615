@@ -1,0 +1,13 @@
+name: assignment3
+title: assignment3
+username:
+account: lingzhouao
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 313268
+bundleId: 1297064
+url: https://lingzhouao.shinyapps.io/assignment3/
+when: 1522618849.28611
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Assignment3.pdf|Assignment3.Rmd
