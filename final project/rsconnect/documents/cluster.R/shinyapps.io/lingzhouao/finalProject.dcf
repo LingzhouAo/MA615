@@ -1,0 +1,13 @@
+name: finalProject
+title: finalProject
+username:
+account: lingzhouao
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 339102
+bundleId: 1361613
+url: https://lingzhouao.shinyapps.io/finalProject/
+when: 1525751672.62521
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: 02115.csv|02118.csv|02119.csv|02121.csv|02124.csv|02125.csv|02126.csv|02127.csv|02128.csv|02129.csv|02130.csv|02131.csv|02132.csv|02134.csv|02135.csv|02136.csv|02210.csv|02215.csv|02445.csv|houses.R|scrap_house_data.ipynb|url_list.txt|yelp.R|.ipynb_checkpoints/scrap_house_data-checkpoint.ipynb|.ipynb_checkpoints/scrap_more_data-checkpoint.ipynb
